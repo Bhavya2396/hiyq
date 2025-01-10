@@ -1,156 +1,105 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { FaGraduationCap, FaMapMarkerAlt, FaVenusMars } from 'react-icons/fa';
+import { FaFilter, FaGraduationCap } from 'react-icons/fa';
 
 interface FilterOptionsProps {
-  onApply: (filters: FilterState) => void;
   onClose: () => void;
+  onApply: (filters: FilterState) => void;
 }
 
 interface FilterState {
-  ageRange: [number, number];
-  distance: number;
-  college: string;
-  showVerifiedOnly: boolean;
-  gender: string;
+  university: string;
+  major: string;
+  yearOfStudy: string;
 }
 
-const FilterOptions = ({ onApply, onClose }: FilterOptionsProps) => {
+const FilterOptions: React.FC<FilterOptionsProps> = ({ onClose, onApply }) => {
   const [filters, setFilters] = useState<FilterState>({
-    ageRange: [18, 25],
-    distance: 10,
-    college: '',
-    showVerifiedOnly: false,
-    gender: 'all',
+    university: '',
+    major: '',
+    yearOfStudy: '',
   });
 
-  const handleAgeChange = (value: number, index: number) => {
-    const newRange = [...filters.ageRange] as [number, number];
-    newRange[index] = value;
-    setFilters({ ...filters, ageRange: newRange });
+  const handleApply = () => {
+    onApply(filters);
+    onClose();
   };
 
   return (
-    <div className="space-y-6">
-      {/* Age Range */}
-      <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Age Range</h4>
-        <div className="flex items-center space-x-4">
-          <div className="flex-1">
-            <input
-              type="range"
-              min={18}
-              max={30}
-              value={filters.ageRange[0]}
-              onChange={(e) => handleAgeChange(Number(e.target.value), 0)}
-              className="w-full accent-primary-500"
-            />
-            <span className="text-sm text-gray-500">{filters.ageRange[0]}</span>
-          </div>
-          <span className="text-gray-400">to</span>
-          <div className="flex-1">
-            <input
-              type="range"
-              min={18}
-              max={30}
-              value={filters.ageRange[1]}
-              onChange={(e) => handleAgeChange(Number(e.target.value), 1)}
-              className="w-full accent-primary-500"
-            />
-            <span className="text-sm text-gray-500">{filters.ageRange[1]}</span>
-          </div>
+    <div className="fixed inset-0 bg-black/50 z-50">
+      <div className="absolute inset-x-0 bottom-0 bg-white rounded-t-3xl p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-[var(--text)]">Filters</h2>
+          <button 
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <FaFilter className="text-gray-500" />
+          </button>
         </div>
-      </div>
 
-      {/* Distance */}
-      <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Maximum Distance</h4>
-        <div className="flex items-center space-x-4">
-          <div className="flex-1">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              University
+            </label>
+            <div className="relative">
+              <FaGraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={filters.university}
+                onChange={(e) => setFilters({ ...filters, university: e.target.value })}
+                placeholder="Enter university name"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Major
+            </label>
             <input
-              type="range"
-              min={1}
-              max={100}
-              value={filters.distance}
-              onChange={(e) => setFilters({ ...filters, distance: Number(e.target.value) })}
-              className="w-full accent-primary-500"
+              type="text"
+              value={filters.major}
+              onChange={(e) => setFilters({ ...filters, major: e.target.value })}
+              placeholder="Enter your major"
+              className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             />
           </div>
-          <span className="text-sm text-gray-500 w-16">{filters.distance} km</span>
-        </div>
-      </div>
 
-      {/* College */}
-      <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">College</h4>
-        <div className="relative">
-          <FaGraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            value={filters.college}
-            onChange={(e) => setFilters({ ...filters, college: e.target.value })}
-            placeholder="Enter college name"
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-          />
-        </div>
-      </div>
-
-      {/* Gender */}
-      <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Show Me</h4>
-        <div className="flex space-x-2">
-          {['all', 'women', 'men'].map((gender) => (
-            <button
-              key={gender}
-              onClick={() => setFilters({ ...filters, gender })}
-              className={`flex-1 py-2 rounded-lg text-sm capitalize ${
-                filters.gender === gender
-                  ? 'bg-primary-500 text-white'
-                  : 'bg-gray-100 text-gray-600'
-              }`}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Year of Study
+            </label>
+            <select
+              value={filters.yearOfStudy}
+              onChange={(e) => setFilters({ ...filters, yearOfStudy: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             >
-              {gender}
-            </button>
-          ))}
+              <option value="">Select year</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
+              <option value="5+">5+ Year</option>
+            </select>
+          </div>
         </div>
-      </div>
 
-      {/* Verified Only */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h4 className="text-sm font-medium text-gray-700">Verified Profiles Only</h4>
-          <p className="text-xs text-gray-500">Show only verified college students</p>
+        <div className="mt-6 flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 rounded-xl border border-gray-200 font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleApply}
+            className="flex-1 py-3 rounded-xl bg-[var(--primary)] text-white font-medium hover:bg-[var(--primary-dark)] transition-colors"
+          >
+            Apply Filters
+          </button>
         </div>
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            checked={filters.showVerifiedOnly}
-            onChange={(e) => setFilters({ ...filters, showVerifiedOnly: e.target.checked })}
-            className="sr-only peer"
-          />
-          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-500"></div>
-        </label>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex space-x-4 pt-4">
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={onClose}
-          className="flex-1 py-3 rounded-xl bg-gray-100 text-gray-700 font-medium"
-        >
-          Reset
-        </motion.button>
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => {
-            onApply(filters);
-            onClose();
-          }}
-          className="flex-1 py-3 rounded-xl bg-primary-500 text-white font-medium"
-        >
-          Apply Filters
-        </motion.button>
       </div>
     </div>
   );

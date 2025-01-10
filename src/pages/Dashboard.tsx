@@ -139,8 +139,8 @@ const ActionButtons = ({ onPass, onSuperLike, onLike }: {
 const Dashboard = () => {
   const navigate = useNavigate();
   const [currentProfile, setCurrentProfile] = useState(0);
-  const [showFilters, setShowFilters] = useState(false);
   const [university, setUniversity] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     const email = localStorage.getItem('userEmail');

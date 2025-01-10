@@ -75,18 +75,20 @@ const Header = ({ onCreateEvent, onFilter }: {
 );
 
 // Date Filter Component
-const DateFilter = () => {
+const DateFilter = ({ initialSelected, onSelect }: {
+  initialSelected: string;
+  onSelect: (selected: string) => void;
+}) => {
   const dates = ['Today', 'Tomorrow', 'This Week', 'This Month'];
-  const [selected, setSelected] = useState('Today');
 
   return (
     <div className="px-4 py-3 flex items-center gap-2 overflow-x-auto scrollbar-hide">
       {dates.map((date) => (
         <button
           key={date}
-          onClick={() => setSelected(date)}
+          onClick={() => onSelect(date)}
           className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-colors ${
-            selected === date
+            initialSelected === date
               ? 'bg-[var(--primary)] text-white'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
           }`}
@@ -196,11 +198,33 @@ const EventCard = ({ event, onClick }: {
 
 const Events = () => {
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>('Today');
 
-  const filteredEvents = selectedDate
-    ? mockEvents.filter(event => event.date === selectedDate)
-    : mockEvents;
+  const filteredEvents = mockEvents.filter(event => {
+    if (selectedDate === 'Today') {
+      const today = new Date().toISOString().split('T')[0];
+      return event.date === today;
+    }
+    if (selectedDate === 'Tomorrow') {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return event.date === tomorrow.toISOString().split('T')[0];
+    }
+    if (selectedDate === 'This Week') {
+      const today = new Date();
+      const endOfWeek = new Date();
+      endOfWeek.setDate(today.getDate() + 7);
+      const eventDate = new Date(event.date);
+      return eventDate >= today && eventDate <= endOfWeek;
+    }
+    if (selectedDate === 'This Month') {
+      const today = new Date();
+      const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      const eventDate = new Date(event.date);
+      return eventDate >= today && eventDate <= endOfMonth;
+    }
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -208,7 +232,7 @@ const Events = () => {
         onCreateEvent={() => console.log('Create new event')}
         onFilter={() => console.log('Open filters')}
       />
-      <DateFilter />
+      <DateFilter initialSelected={selectedDate} onSelect={setSelectedDate} />
       
       <div className="pb-16">
         {filteredEvents.map(event => (
