@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 type Step = 'basic' | 'personality' | 'photos' | 'interests';
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<Step>('basic');
   const [formData, setFormData] = useState({
     firstName: '',
@@ -222,6 +223,16 @@ const Signup = () => {
           className="w-full py-4 bg-[#E2FF54] text-[#6B4EFF] font-bold rounded-full text-lg"
         >
           Start
+        </motion.button>
+      )}
+
+      {currentStep === 'interests' && (
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={() => navigate('/dashboard')}
+          className="w-full py-4 bg-[#E2FF54] text-[#6B4EFF] font-bold rounded-full text-lg"
+        >
+          Complete Profile
         </motion.button>
       )}
     </div>

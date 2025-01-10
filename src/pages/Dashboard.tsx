@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHeart, FaTimes, FaStar, FaFilter, FaComment, FaCheck } from 'react-icons/fa';
 import BottomNav from '../components/BottomNav';
+import FilterOptions from '../components/FilterOptions';
 
 // Mock data for profiles - moved outside component to prevent recreation
 const mockProfiles = [
@@ -194,6 +195,16 @@ const Dashboard = () => {
       />
 
       <BottomNav />
+
+      {showFilters && (
+        <FilterOptions
+          onClose={() => setShowFilters(false)}
+          onApply={(filters) => {
+            console.log('Applied filters:', filters);
+            setShowFilters(false);
+          }}
+        />
+      )}
     </div>
   );
 };
