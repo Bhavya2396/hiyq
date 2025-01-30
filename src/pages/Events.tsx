@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCalendarPlus, FaMapMarkerAlt, FaClock, FaUsers, FaFilter, FaChevronRight, FaSearch } from 'react-icons/fa';
 import BottomNav from '../components/BottomNav';
