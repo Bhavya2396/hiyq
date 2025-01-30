@@ -27,6 +27,20 @@ const Signup = () => {
     "I'm usually the life of the party",
   ];
 
+  const handleComplete = () => {
+    // Save user data (you can enhance this later)
+    localStorage.setItem('userData', JSON.stringify(formData));
+    navigate('/dashboard');
+  };
+
+  const handleBack = () => {
+    if (currentStep === 'personality') {
+      setCurrentStep('basic');
+    } else if (currentStep === 'interests') {
+      setCurrentStep('personality');
+    }
+  };
+
   const renderBasicInfo = () => (
     <div className="space-y-6">
       <div className="relative">
@@ -177,7 +191,7 @@ const Signup = () => {
       <div className="flex items-center mb-8">
         {currentStep !== 'basic' && (
           <button
-            onClick={() => setCurrentStep('basic')}
+            onClick={handleBack}
             className="text-white"
           >
             <FaArrowLeft className="text-xl" />
@@ -229,7 +243,7 @@ const Signup = () => {
       {currentStep === 'interests' && (
         <motion.button
           whileTap={{ scale: 0.95 }}
-          onClick={() => navigate('/dashboard')}
+          onClick={handleComplete}
           className="w-full py-4 bg-[#E2FF54] text-[#6B4EFF] font-bold rounded-full text-lg"
         >
           Complete Profile

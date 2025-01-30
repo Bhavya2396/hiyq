@@ -174,6 +174,11 @@ const Dashboard = () => {
     setCurrentProfile((prev) => (prev + 1) % mockProfiles.length);
   }, []);
 
+  const handleFilterApply = useCallback((filters: any) => {
+    console.log('Applied filters:', filters);
+    setShowFilters(false);
+  }, []);
+
   const profile = mockProfiles[currentProfile];
 
   return (
@@ -199,10 +204,7 @@ const Dashboard = () => {
       {showFilters && (
         <FilterOptions
           onClose={() => setShowFilters(false)}
-          onApply={(filters) => {
-            console.log('Applied filters:', filters);
-            setShowFilters(false);
-          }}
+          onApply={handleFilterApply}
         />
       )}
     </div>
